@@ -1,0 +1,57 @@
+* 自动解压截图工具
+
+** 安装使用
+
+安装一个Debian虚拟机来跑这个环境。最好挂个空间大一点的硬盘
+
+有疑问Github留言然后问我，邮件也行。
+
+参考: https://guix.gnu.org/en/manual/zh-cn/html_node/Er-Jin-Zhi-WenJian-An-Zhuang-.html
+
+#+BEGIN_SRC text
+  debian $ sudo -i
+  debian # cd /tmp
+  debian # wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+  debian # chmod +x guix-install.sh
+  debian # ./guix-install.sh
+  debian # apt install unrar
+  debian # exit
+  debian $ guix pull
+  debian $ guix install glibc-utf8-locales nss-certs fontconfig font-gnu-unifont
+  debian $ exit
+  # 这里需要重新登录或新启动一个shell
+  debian $ fc-cache -rvf
+  # 现在需要进入图形界面执行以下命令
+  debian $ git clone THIS_REPO
+  debian $ cd THIS_REPO
+  debian $ cd tools
+  debian $ cd src
+  # 编译修改过的hikari作为运行环境
+  debian $ cd hikari-2.2.3
+  debian $ guix environment hikari
+  debian (in env) $ bmake CC=gcc WITH_LAYERSHELL=YES WITH_SCREENCOPY=YES
+  debian (in env) $ cp hikari ../../bin/hikari
+  debian (in env) $ exit
+  debian $ cd ../../
+  debian $ ./enter-env.sh
+  debian $ mkdir ../data/
+  debian $ cd ../data/
+  debian $ cp /path/to/url_list ./
+  # 将 urllist 文件拷贝到 data 目录下面，最好分割几下，按机器宽带考虑
+  # 如有不懂直接看脚本
+  debian $ ../tools/download.sh < url_list
+  # 等待下载完毕
+  debian $ TERMINAL=foot ../tools/bin/hikari
+  # 启动一个hikari会话
+  # 正常情况会出现一个窗口里面黑的
+  # 此时按Super+Enter在里面启动一个终端模拟器
+  # 以下操作在终端模拟器里面执行
+  debian $ cd THIS_REPO
+  debian $ cd tools
+  debian $ ./enter-env.sh
+  debian $ cd ../data/
+  debian $ python3 ../tools/do.py url_list
+  # 然后脚本就开始执行了，如果数据提供源没办法保证完整性，过程会失败，失败的过程可以拿awk提取出来然后需要手动截图了。
+  # tools/check_csv.sh 可以参考使用
+  # 输出的截图文件就在data/域名/文件名字.png
+#+END_SRC
